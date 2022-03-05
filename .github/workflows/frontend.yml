@@ -1,0 +1,48 @@
+name: Frontend
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: ap-southeast-1
+  BUCKET_NAME: joelteo-rw-frontend
+  VITE_API_HOST: https://d36x9zxxnf.execute-api.ap-southeast-1.amazonaws.com/dev
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: "Set URL"
+      run: |
+        echo "BASE_URL=/" > .env
+        echo "VITE_API_HOST=$VITE_API_HOST" >> .env
+        echo "BUCKET_NAME=$BUCKET_NAME" >> .env
+        echo "Output website: http://$BUCKET_NAME.s3-website-$AWS_DEFAULT_REGION.amazonaws.com"
+    - name: Install
+      uses: borales/actions-yarn@v2.3.0
+      with:
+        cmd: install
+    - name: Build
+      uses: borales/actions-yarn@v2.3.0
+      with:
+        cmd: build
+    - name: Test
+      uses: borales/actions-yarn@v2.3.0
+      with:
+        cmd: test
+    - name: Deploy
+      uses: maurete/ansible-action@main
+      with:
+        playbook: playbook_create.yml
+        arguments: |
+          --extra-vars BUCKET_NAME=$BUCKET_NAME
+          --verbose
+      
+    

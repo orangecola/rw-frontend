@@ -1,0 +1,96 @@
+{
+  "name": "vue3-realworld-example-app",
+  "version": "1.1.0",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "lint:script": "eslint \"{src/**/*.{ts,vue},cypress/**/*.js}\"",
+    "lint:tsc": "vue-tsc --noEmit",
+    "lint": "concurrently \"yarn build\" \"yarn lint:tsc\" \"yarn lint:script\"",
+    "test:unit": "jest",
+    "test:e2e": "yarn build && concurrently -rk -s first \"yarn serve\" \"cypress run -c baseUrl=http://localhost:5000\"",
+    "test:e2e:ci": "cypress run -C cypress.prod.json",
+    "test": "yarn test:unit"
+  },
+  "dependencies": {
+    "@harlem/core": "^2.2.3",
+    "insane": "^2.6.2",
+    "marked": "^4.0.12",
+    "vue": "^3.2.30",
+    "vue-router": "^4.0.12"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.2",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/vue": "^6.4.2",
+    "@types/jest": "^27.0.3",
+    "@types/marked": "^4.0.1",
+    "@typescript-eslint/eslint-plugin": "^5.5.0",
+    "@typescript-eslint/parser": "^5.5.0",
+    "@vitejs/plugin-vue": "^2.1.0",
+    "@vue/compiler-sfc": "^3.2.24",
+    "babel-jest": "^27.4.2",
+    "concurrently": "^7.0.0",
+    "cypress": "^9.1.1",
+    "eslint": "^8.4.0",
+    "eslint-config-standard-with-typescript": "^21.0.1",
+    "eslint-plugin-cypress": "^2.12.1",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-vue": "^8.2.0",
+    "husky": "^4.3.8",
+    "jest": "^27.4.3",
+    "jsdom": "^19.0.0",
+    "lint-staged": "^12.3.3",
+    "rollup-plugin-analyzer": "^4.0.0",
+    "ts-jest": "^27.1.0",
+    "typescript": "^4.5.5",
+    "vite": "^2.7.13",
+    "vue-tsc": "^0.31.2",
+    "vue3-jest": "^27.0.0-alpha.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "yarn lint"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{ts,vue}": "eslint --fix",
+    "cypress/**/*.js": "eslint --fix"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "globals": {
+      "ts-jest": {}
+    },
+    "testEnvironment": "jsdom",
+    "transform": {
+      "^.+\\.vue$": "vue3-jest",
+      "^.+\\js$": "babel-jest"
+    },
+    "collectCoverageFrom": [
+      "<rootDir>/src/**/*.{ts,vue}",
+      "!<rootDir>/src/config.ts"
+    ],
+    "moduleFileExtensions": [
+      "vue",
+      "ts",
+      "js",
+      "json",
+      "node"
+    ],
+    "testMatch": [
+      "<rootDir>/src/**/*.spec.ts"
+    ],
+    "modulePaths": [
+      "<rootDir>"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/setup-test.ts"
+    ]
+  }
+}

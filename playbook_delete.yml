@@ -1,0 +1,12 @@
+---
+- name: Delete AWS resources
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  vars:
+    bucket_name: '{{ lookup("env", "BUCKET_NAME") }}'
+  tasks:
+    - amazon.aws.s3_bucket:
+        name: "{{bucket_name}}"
+        state: absent
+        force: yes
